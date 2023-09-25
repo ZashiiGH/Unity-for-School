@@ -4,24 +4,37 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float sensX;
-    public float sensY;
 
-    private void start()
+    //CAMERA SCRIPT------------------------------------------------------
+
+    public float sensitivity = 2.0f;
+    public float minimumX = -90.0f;
+    public float maximumX = 90.0f;
+
+    private float rotationX = 0;
+
+    private void Start()
     {
-        //Lock Cursor in screen
-        Cursor.lockstate = CursosLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    void Update()
     {
-        //Mouse Input
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+    
+        // Get mouse input
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
 
-        yRotation += mouseX;
-        xRotation -= mouseY;
+        // Rotate the camera horizontally based on mouse input
+        transform.localRotation *= Quaternion.Euler(0, mouseX, 0);
+
+        // Calculate the new vertical rotation
+        rotationX -= mouseY;
+        rotationX = Mathf.Clamp(rotationX, minimumX, maximumX);
+
+        // Apply the vertical rotation to the camera
+        Camera.main.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
     }
 
+   
 }
